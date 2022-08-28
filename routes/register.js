@@ -2,21 +2,6 @@ const express = require("express");
 const routeRegister = express.Router();
 const { AccountModel } = require("../models");
 
-// read data from db
-// const getData = async () => {
-//     const data = await AccountModel.find({});
-//     return data;
-// };
-
-// routeRegister.get("/", async (req, res, next) => {
-//     try {
-//         const data = await AccountModel.find({});
-//         res.json(data);
-//     } catch (error) {
-//         res.json(err);
-//     }
-// });
-
 routeRegister.post("/", async (req, res, next) => {
     try {
         const { username, password, role } = req.body;
