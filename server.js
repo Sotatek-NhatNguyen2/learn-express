@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 // routes
 app.use("/api/v1/register", routes.routeRegister);
 app.use("/api/v1/login", routes.routeLogin);
-app.use("/api/v1/list-account", routes.routeAccount);
+app.use("/api/v1/account", routes.routeAccount);
 app.use("/", routes.routeHome);
 
 // listen app
