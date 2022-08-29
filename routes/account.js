@@ -5,10 +5,35 @@ const { AccountModel } = require("../models");
 routeAccount.get("/", async (req, res, next) => {
     try {
         // read data from db
+        let { asset, limit } = req.query;
+
+        if ((asset && !Number(asset)) || (limit && !Number(limit))) {
+            res.status(400).json("Sai tham so");
+            return;
+        }
+
+        if (asset && limit) {
+            const data = await AccountModel.find({}).skip(asset).limit(limit);
+            res.status(201).json(data);
+            return;
+        }
+
+        if (asset) {
+            const data = await AccountModel.find({}).skip(asset);
+            res.status(201).json(data);
+            return;
+        }
+
+        if (limit) {
+            const data = await AccountModel.find({}).limit(limit);
+            res.status(201).json(data);
+            return;
+        }
+
         const data = await AccountModel.find({});
         res.status(201).json(data);
     } catch (error) {
-        res.status(404).json("Loi server");
+        res.status(500).json("Loi server");
     }
 });
 
@@ -17,7 +42,7 @@ routeAccount.post("/", async (req, res, next) => {
         const { username, password, role } = req.body;
         if (!username || !password || !role) {
             res.status(400).json("Nhap day du thong tin");
-            return
+            return;
         }
 
         const account = await AccountModel.findOne({ username });
@@ -49,7 +74,7 @@ routeAccount.put("/:id", async (req, res, next) => {
         const { password } = req.body;
         if (!id || !password) {
             res.status(400).json("Nhap day du thong tin");
-            return
+            return;
         }
 
         // db _id
@@ -74,7 +99,7 @@ routeAccount.delete("/:id", async (req, res, next) => {
         const id = req.params.id;
         if (!id) {
             res.status(400).json("Nhap day du thong tin");
-            return
+            return;
         }
 
         const account = await AccountModel.findByIdAndDelete(id);
