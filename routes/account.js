@@ -6,32 +6,48 @@ routeAccount.get("/", async (req, res, next) => {
     try {
         // read data from db
         let { asset, limit } = req.query;
+        asset = Number(asset)
+        limit = Number(limit)
+
+        console.log(asset, limit);
 
         if ((asset && !Number(asset)) || (limit && !Number(limit))) {
             res.status(400).json("Sai tham so");
             return;
         }
 
-        if (asset && limit) {
-            const data = await AccountModel.find({}).skip(asset).limit(limit);
-            res.status(201).json(data);
+        if (asset || asset === 0 && limit) {
+            const data = await AccountModel.find().skip(asset).limit(limit);
+            res.status(201).json({
+                total: data.length,
+                data
+            });
             return;
         }
 
         if (asset) {
             const data = await AccountModel.find({}).skip(asset);
-            res.status(201).json(data);
+            res.status(201).json({
+                total: data.length,
+                data
+            });
             return;
         }
 
         if (limit) {
             const data = await AccountModel.find({}).limit(limit);
-            res.status(201).json(data);
+            res.status(201).json({
+                total: data.length,
+                data
+            });
             return;
         }
 
         const data = await AccountModel.find({});
-        res.status(201).json(data);
+        res.status(201).json({
+            total: data.length,
+            data
+        });
     } catch (error) {
         res.status(500).json("Loi server");
     }

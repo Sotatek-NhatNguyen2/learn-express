@@ -23,7 +23,7 @@ app.use("/", routes.routeHome);
 app.use("/public", express.static(path.join(__dirname, "/public")));
 
 app.get("/public", (req, res, next) => {
-    const pathFile = path.join(__dirname, "/index.html");
+    const pathFile = path.join(__dirname, "/public/index.html");
     res.sendFile(pathFile);
 });
 
