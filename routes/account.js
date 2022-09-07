@@ -4,12 +4,9 @@ const { AccountModel } = require("../models");
 
 routeAccount.get("/", async (req, res, next) => {
     try {
-        // read data from db
         let { asset, limit } = req.query;
         asset = Number(asset)
         limit = Number(limit)
-
-        console.log(asset, limit);
 
         if ((asset && !Number(asset)) || (limit && !Number(limit))) {
             res.status(400).json("Sai tham so");
@@ -53,6 +50,7 @@ routeAccount.get("/", async (req, res, next) => {
     }
 });
 
+// register
 routeAccount.post("/", async (req, res, next) => {
     try {
         const { username, password, role } = req.body;
@@ -84,6 +82,7 @@ routeAccount.post("/", async (req, res, next) => {
     }
 });
 
+// update
 routeAccount.put("/:id", async (req, res, next) => {
     try {
         const id = req.params.id;
@@ -110,6 +109,7 @@ routeAccount.put("/:id", async (req, res, next) => {
     }
 });
 
+// delete
 routeAccount.delete("/:id", async (req, res, next) => {
     try {
         const id = req.params.id;
