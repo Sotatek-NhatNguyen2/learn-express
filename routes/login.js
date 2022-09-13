@@ -1,6 +1,7 @@
 const express = require("express");
 const routeLogin = express.Router();
 const jwt = require("jsonwebtoken");
+const fs = require('fs')
 const { AccountModel } = require("../models");
 const { KEY } = require("../const");
 
@@ -24,7 +25,7 @@ routeLogin.get("/", async (req, res, next) => {
     }
 });
 
-routeLogin.post("/", async (req, res, next) => {
+const checkLogin =  async (req, res, next) => {
     try {
         const { username, password } = req.body;
         if (!username || !password) {
@@ -38,14 +39,51 @@ routeLogin.post("/", async (req, res, next) => {
             return;
         }
 
-        const token = jwt.sign({ _id: account._id }, KEY);
-        res.status(200).json({
-            isSuccess: true,
-            token,
-        });
+        req.account = account
+        next()
     } catch (error) {
         res.status(500).json("Co loi server");
     }
-});
+}
+
+const checkRole =  async (req, res, next) => {
+    try {
+        const { role, _id } = req.account
+        const privateKey = fs.readFileSync('./key/private.pem');
+        const token = jwt.sign({ _id }, privateKey, { algorithm: 'RS256'});
+
+        switch(Number(role)) {
+            case 0: 
+                res.status(200).json({
+                    isSuccess: true,
+                    token,
+                    type: 0
+                });
+                return;
+            case 1: 
+                res.status(200).json({
+                    isSuccess: true,
+                    token,
+                    type: 1
+                });
+                return;
+            case 2: 
+                res.status(200).json({
+                    isSuccess: true,
+                    token,
+                    type: 2
+                });
+                return;
+            default: 
+                res.status(200).json({
+                    isSuccess: false,
+                });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+routeLogin.post("/", checkLogin, checkRole);
 
 module.exports = routeLogin;
